@@ -21,7 +21,7 @@ migrate_working_dir/
 
 *.exe
 *.evb
-./net_table.json
+net_table.json
 
 
 # The .vscode folder contains launch configuration and tasks you configure in
