@@ -1,4 +1,0 @@
-[
-  {"id":"1","desc":"Config rede A","ip":"10.0.0.10","mask":"255.255.255.0","interfaceName":"Ethernet 2","gw":"10.0.0.1","dns":["8.8.8.8","8.8.4.4"]},
-  {"id":"2","desc":"Config rede B","ip":"10.0.1.20","mask":"255.255.255.0","interfaceName":"Ethernet 2","gw":"10.0.1.1","dns":["8.8.8.8","1.1.1.1"]}
-]
