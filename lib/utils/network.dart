@@ -1,24 +1,19 @@
-
-
-
-
-
-import 'package:ip_changer/utils/convert_network.dart';
-import 'package:ip_changer/utils/is_ipv4.dart';
-import 'package:ip_changer/utils/is_mask.dart';
-import 'package:ip_changer/utils/parse_prefix.dart';
+import 'package:ip_set/utils/convert_network.dart';
+import 'package:ip_set/utils/is_ipv4.dart';
+import 'package:ip_set/utils/is_mask.dart';
+import 'package:ip_set/utils/parse_prefix.dart';
 
 class NetInfo {
   // final String ipBase;           // o IP usado no cálculo (ip ou gateway)
   final String maskDotted;
   final String maskCidr;
-  final int prefix;              // ex.: 24
-  final String network;          // endereço de rede
-  final String broadcast;        // broadcast (se aplicável)
-  final String? firstUsable;     // null para /31 e /32
-  final String? lastUsable;      // null para /31 e /32
-  final String? suggestedIp;     // sugestão de IP (null se não aplicável)
-  final int totalHosts;          // qtd de hosts utilizáveis (0 p/ /31 e /32)
+  final int prefix; // ex.: 24
+  final String network; // endereço de rede
+  final String broadcast; // broadcast (se aplicável)
+  final String? firstUsable; // null para /31 e /32
+  final String? lastUsable; // null para /31 e /32
+  final String? suggestedIp; // sugestão de IP (null se não aplicável)
+  final int totalHosts; // qtd de hosts utilizáveis (0 p/ /31 e /32)
 
   NetInfo({
     // required this.ipBase,
@@ -49,23 +44,19 @@ class ValidationResult {
 // Escolhe uma sugestão de IP dentro da faixa utilizável,
 // evitando o gateway caso exista.
 String? _pickSuggestedIp({
-  required int network,    // endereço de rede em int
-  required int broadcast,  // broadcast em int
-  int? gwInt,              // opcional: evitar sugerir o gateway
+  required int network, // endereço de rede em int
+  required int broadcast, // broadcast em int
+  int? gwInt, // opcional: evitar sugerir o gateway
 }) {
   // Faixa utilizável clássica
-  final usableLow  = network + 1;
+  final usableLow = network + 1;
   final usableHigh = broadcast - 1;
 
   // /31 e /32 (ou redes sem faixa utilizável) caem aqui
   if (usableLow > usableHigh) return null;
 
   // Preferências: .2, depois .1, depois último utilizável
-  final candidates = <int>[
-    usableLow + 1,
-    usableLow,
-    usableHigh,
-  ];
+  final candidates = <int>[usableLow + 1, usableLow, usableHigh];
 
   for (final c in candidates) {
     if (c < usableLow || c > usableHigh) continue;
@@ -74,7 +65,6 @@ String? _pickSuggestedIp({
   }
   return null;
 }
-
 
 NetInfo networkInfo({String? ip, String? gateway, required String mask}) {
   if ((ip == null || ip.isEmpty) && (gateway == null || gateway.isEmpty)) {
@@ -111,7 +101,9 @@ NetInfo networkInfo({String? ip, String? gateway, required String mask}) {
     lastUsable = intToIp(broadcast - 1);
     totalHosts = (1 << (32 - prefix)) - 2;
 
-    final gwInt = (gateway != null && gateway.isNotEmpty) ? ipToInt(gateway) : null;
+    final gwInt = (gateway != null && gateway.isNotEmpty)
+        ? ipToInt(gateway)
+        : null;
     // sugestão: se IP atual for null, use o segundo utilizável (se existir)
     suggestedIp = _pickSuggestedIp(
       network: network,
@@ -161,7 +153,6 @@ ValidationResult validateIPv4Config({
     return ValidationResult(isValid: false, errors: errors);
   }
 
-
   final maskInt = maskToInt(mask);
 
   final prefix = dottedToCidr(mask, returnInt: true) as int;
@@ -174,27 +165,37 @@ ValidationResult validateIPv4Config({
   // Mesma sub-rede?
   final gwNetwork = gwInt & maskInt;
   if (gwNetwork != network) {
-    errors.add('Gateway não pertence à mesma rede do IP: '
-        '${intToIp(network)}/$prefix');
+    errors.add(
+      'Gateway não pertence à mesma rede do IP: '
+      '${intToIp(network)}/$prefix',
+    );
   }
 
   // IP não pode ser endereço de rede/broadcast (para /0.. /30)
   if (prefix <= 30) {
     if (ipInt == network) errors.add('IP não pode ser o endereço de rede.');
     if (ipInt == broadcast) errors.add('IP não pode ser o broadcast.');
-    if (gwInt == network) errors.add('Gateway não pode ser o endereço de rede.');
+    if (gwInt == network)
+      errors.add('Gateway não pode ser o endereço de rede.');
     if (gwInt == broadcast) errors.add('Gateway não pode ser o broadcast.');
   } else if (prefix == 31) {
     // /31 (ponto-a-ponto) pode ser aceitável em alguns cenários, mas avisa
-    warnings.add('Prefixo /31: não há hosts utilizáveis no padrão tradicional.');
+    warnings.add(
+      'Prefixo /31: não há hosts utilizáveis no padrão tradicional.',
+    );
   } else if (prefix == 32) {
     warnings.add('Prefixo /32: IP único, sem gateway tradicional.');
     // Se /32, gateway igual ao IP normalmente não faz sentido
     if (gwInt != ipInt) {
-      warnings.add('Em /32, o gateway costuma ser resolvido por roteamento estático/host-route.');
+      warnings.add(
+        'Em /32, o gateway costuma ser resolvido por roteamento estático/host-route.',
+      );
     }
   }
 
-  return ValidationResult(isValid: errors.isEmpty, errors: errors, warnings: warnings);
+  return ValidationResult(
+    isValid: errors.isEmpty,
+    errors: errors,
+    warnings: warnings,
+  );
 }
-

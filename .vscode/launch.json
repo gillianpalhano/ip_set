@@ -5,18 +5,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "ip_changer",
+      "name": "ip_set",
       "request": "launch",
       "type": "dart"
     },
     {
-      "name": "ip_changer (profile mode)",
+      "name": "ip_set (profile mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
     },
     {
-      "name": "ip_changer (release mode)",
+      "name": "ip_set (release mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"

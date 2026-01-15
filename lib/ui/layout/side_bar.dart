@@ -1,7 +1,7 @@
-import 'package:ip_changer/state/config_state.dart';
+import 'package:ip_set/state/config_state.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ip_changer/ui/layout/side_bar_item.dart';
+import 'package:ip_set/ui/layout/side_bar_item.dart';
 import 'package:provider/provider.dart';
 
 class CustomSidebar extends StatefulWidget {
@@ -16,18 +16,44 @@ class _CustomSidebarState extends State<CustomSidebar> {
   bool isExpanded = false;
 
   final List<_MenuItem> items = const [
-    _MenuItem(index: 0, icon: Icons.play_arrow, label: 'Trocar IP', route: '/', position: 'top'),
-    _MenuItem(index: 1, icon: Icons.sync_alt, label: 'Conversor', route: '/cidr', position: 'top'),
-    _MenuItem(index: 2, icon: Icons.lan_outlined, label: 'Calculadora', route: '/calc', position: 'top'),
+    _MenuItem(
+      index: 0,
+      icon: Icons.play_arrow,
+      label: 'Trocar IP',
+      route: '/',
+      position: 'top',
+    ),
+    _MenuItem(
+      index: 1,
+      icon: Icons.sync_alt,
+      label: 'Conversor',
+      route: '/cidr',
+      position: 'top',
+    ),
+    _MenuItem(
+      index: 2,
+      icon: Icons.lan_outlined,
+      label: 'Calculadora',
+      route: '/calc',
+      position: 'top',
+    ),
 
-    _MenuItem(index: 3, icon: Icons.settings, label: 'Configuração', route: '/config', position: 'bottom'),
+    _MenuItem(
+      index: 3,
+      icon: Icons.settings,
+      label: 'Configuração',
+      route: '/config',
+      position: 'bottom',
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
     var configState = context.watch<ConfigState>();
     final topItems = items.where((item) => item.position == 'top').toList();
-    final bottomItems = items.where((item) => item.position == 'bottom').toList();
+    final bottomItems = items
+        .where((item) => item.position == 'bottom')
+        .toList();
 
     return Container(
       width: isExpanded ? 160 : 60,
@@ -101,5 +127,11 @@ class _MenuItem {
   final String route;
   final String position;
 
-  const _MenuItem({required this.index, required this.icon, required this.label, required this.route, required this.position});
+  const _MenuItem({
+    required this.index,
+    required this.icon,
+    required this.label,
+    required this.route,
+    required this.position,
+  });
 }

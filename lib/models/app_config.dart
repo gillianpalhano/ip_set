@@ -6,9 +6,9 @@ class AppConfig {
   final int versionFileConfig;
 
   AppConfig({
-    this.versionFileConfig = 0,
+    this.versionFileConfig = 1,
     this.isCalcGatewayEnabled = true,
-    this.darkMode = false
+    this.darkMode = true,
   });
 
   factory AppConfig.fromJson(Map<String, dynamic> json) {

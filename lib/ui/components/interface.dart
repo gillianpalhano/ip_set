@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:ip_changer/state/network_state.dart';
+import 'package:ip_set/state/network_state.dart';
 
 class InterfaceDropdown extends StatelessWidget {
   const InterfaceDropdown({
     super.key,
-    required this.value,              // r.interfaceName
-    required this.onChanged,          // (name) => r.interfaceName = name ?? ''
+    required this.value, // r.interfaceName
+    required this.onChanged, // (name) => r.interfaceName = name ?? ''
     this.enabled = true,
     this.label,
     this.forceErrorText,
@@ -34,10 +34,12 @@ class InterfaceDropdown extends StatelessWidget {
       value: selected,
       forceErrorText: forceErrorText,
       items: names
-          .map((n) => DropdownMenuItem<String>(
-                value: n,
-                child: Text(n, maxLines: 1, overflow: TextOverflow.ellipsis),
-              ))
+          .map(
+            (n) => DropdownMenuItem<String>(
+              value: n,
+              child: Text(n, maxLines: 1, overflow: TextOverflow.ellipsis),
+            ),
+          )
           .toList(),
       onChanged: enabled ? onChanged : null,
       decoration: InputDecoration(

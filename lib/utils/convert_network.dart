@@ -1,6 +1,6 @@
-import 'package:ip_changer/utils/is_ipv4.dart';
-import 'package:ip_changer/utils/is_mask.dart';
-import 'package:ip_changer/utils/parse_prefix.dart';
+import 'package:ip_set/utils/is_ipv4.dart';
+import 'package:ip_set/utils/is_mask.dart';
+import 'package:ip_set/utils/parse_prefix.dart';
 
 /// Converte mascará CIDR (/24) para máscara em dotted-decimal.
 String cidrToDotted(String cidr) {
@@ -57,7 +57,6 @@ String intToIp(int x) {
   final d = x & 0xFF;
   return '$a.$b.$c.$d';
 }
-
 
 int maskToInt(String mask) {
   if (!isMask(mask)) {

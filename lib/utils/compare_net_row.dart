@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:ip_changer/models/net_row.dart';
+import 'package:ip_set/models/net_row.dart';
 
 bool compareNetRow(List<NetRow> a, List<NetRow> b) {
   if (a.length != b.length) return false;

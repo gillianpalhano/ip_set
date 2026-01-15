@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:ip_changer/service/config_repository.dart';
+import 'package:ip_set/service/config_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 
-import 'package:ip_changer/ui/routes/main.dart';
-// import 'package:ip_changer/state/theme_state.dart';
-import 'package:ip_changer/state/config_state.dart';
-import 'package:ip_changer/state/network_state.dart';
-import 'package:ip_changer/service/load_interfaces.dart';
-
+import 'package:ip_set/ui/routes/main.dart';
+import 'package:ip_set/state/config_state.dart';
+import 'package:ip_set/state/network_state.dart';
+import 'package:ip_set/service/load_interfaces.dart';
 
 void main() {
   runApp(App());
@@ -18,7 +16,7 @@ void main() {
     win.minSize = Size(800, 600);
     win.size = Size(1300, 600);
     win.alignment = Alignment.center;
-    win.title = "IP Changer";
+    win.title = "IPSet";
     win.show();
     // win.maximize();
   });
@@ -60,23 +58,25 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ConfigState(ConfigRepository())..load()),
+        ChangeNotifierProvider(
+          create: (_) => ConfigState(ConfigRepository())..load(),
+        ),
         ChangeNotifierProvider(create: (_) => NetworkState()),
       ],
       child: Consumer<ConfigState>(
         builder: (context, configState, _) {
-
           // Chama ao construir o app
           loadInterfaces(context);
 
           return MaterialApp.router(
             debugShowCheckedModeBanner: false,
-            themeMode: configState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            themeMode: configState.isDarkMode
+                ? ThemeMode.dark
+                : ThemeMode.light,
             theme: ThemeData(useMaterial3: true, colorScheme: lightScheme),
             darkTheme: ThemeData(useMaterial3: true, colorScheme: darkScheme),
             routerConfig: appRouter,
@@ -86,4 +86,3 @@ class _AppState extends State<App> {
     );
   }
 }
-

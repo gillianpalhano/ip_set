@@ -1,4 +1,4 @@
-import 'package:ip_changer/utils/is_mask.dart';
+import 'package:ip_set/utils/is_mask.dart';
 
 import './is_ipv4.dart';
 
@@ -14,7 +14,13 @@ String? validateIsIPv4(String? v, {bool allowEmpty = false}) {
   return null;
 }
 
-String? validateIsNumberRange(String? v, {int? min, int? max, bool allowEmpty = false, String field = 'Valor'}) {
+String? validateIsNumberRange(
+  String? v, {
+  int? min,
+  int? max,
+  bool allowEmpty = false,
+  String field = 'Valor',
+}) {
   final s = (v ?? '').trim();
   if (allowEmpty && s.isEmpty) return null;
   final n = int.tryParse(s);
@@ -69,6 +75,7 @@ String? validateMask(String? v, {bool allowEmpty = false}) {
   final s = (v ?? '').trim();
   if (allowEmpty && s.isEmpty) return null;
 
-  if (!isMaskCidr(s) && !isMaskDotted(s)) return 'Máscara inválida! Use formato CIDR (/24) ou dotted decimal';
+  if (!isMaskCidr(s) && !isMaskDotted(s))
+    return 'Máscara inválida! Use formato CIDR (/24) ou dotted decimal';
   return null;
 }

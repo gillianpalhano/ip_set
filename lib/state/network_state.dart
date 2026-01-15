@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:ip_changer/models/net_row.dart';
+import 'package:ip_set/models/net_row.dart';
 
 class NetworkState extends ChangeNotifier {
   String get defaultFilePath {
@@ -17,6 +17,7 @@ class NetworkState extends ChangeNotifier {
     isEdited = value;
     notifyListeners();
   }
+
   bool get getIsEdited => isEdited;
 
   // Tabela de redes original
@@ -25,6 +26,7 @@ class NetworkState extends ChangeNotifier {
     networkTableOriginal = list;
     notifyListeners();
   }
+
   List<NetRow> get getNetworkTableOriginal => networkTableOriginal;
 
   // Interface selecionada
@@ -33,6 +35,7 @@ class NetworkState extends ChangeNotifier {
     interfaceNameSelected = interfaceNameSelected;
     notifyListeners();
   }
+
   String get getInterface => interfaceNameSelected;
 
   // Lista de interfaces
@@ -41,5 +44,6 @@ class NetworkState extends ChangeNotifier {
     interfaces = list;
     notifyListeners();
   }
+
   List<NetworkInterface> get getInterfaces => interfaces;
 }

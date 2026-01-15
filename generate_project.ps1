@@ -1,8 +1,8 @@
 # Caminhos base
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $build = Join-Path $root "build\windows\x64\runner\Release"
-$inputExe = Join-Path $build "ip_changer.exe"
-$outputExe = Join-Path $root "IP Changer.exe"
+$inputExe = Join-Path $build "ip_set.exe"
+$outputExe = Join-Path $root "IPSet.exe"
 $evbFile = Join-Path $root "auto_projeto.evb"
 
 # StringBuilder

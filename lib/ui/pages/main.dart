@@ -1,23 +1,23 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 
-import 'package:ip_changer/models/net_row.dart';
-import 'package:ip_changer/service/set_dhcp.dart';
-import 'package:ip_changer/service/set_ipv4.dart';
-import 'package:ip_changer/service/load.dart';
-import 'package:ip_changer/service/save.dart';
-import 'package:ip_changer/state/config_state.dart';
-import 'package:ip_changer/state/network_state.dart';
-import 'package:ip_changer/utils/deep_copy_net_row.dart';
-import 'package:ip_changer/utils/is_admin.dart';
-import 'package:ip_changer/utils/is_ipv4.dart';
-import 'package:ip_changer/utils/is_mask.dart';
-import 'package:ip_changer/utils/network.dart';
-import 'package:ip_changer/ui/components/text_form_field_validate.dart';
-import 'package:ip_changer/ui/components/confirm_dialog.dart';
-import 'package:ip_changer/ui/components/scroll_hor.dart';
-import 'package:ip_changer/ui/components/scroll_vert.dart';
-import 'package:ip_changer/ui/components/interface.dart';
+import 'package:ip_set/models/net_row.dart';
+import 'package:ip_set/service/set_dhcp.dart';
+import 'package:ip_set/service/set_ipv4.dart';
+import 'package:ip_set/service/load.dart';
+import 'package:ip_set/service/save.dart';
+import 'package:ip_set/state/config_state.dart';
+import 'package:ip_set/state/network_state.dart';
+import 'package:ip_set/utils/deep_copy_net_row.dart';
+import 'package:ip_set/utils/is_admin.dart';
+import 'package:ip_set/utils/is_ipv4.dart';
+import 'package:ip_set/utils/is_mask.dart';
+import 'package:ip_set/utils/network.dart';
+import 'package:ip_set/ui/components/text_form_field_validate.dart';
+import 'package:ip_set/ui/components/confirm_dialog.dart';
+import 'package:ip_set/ui/components/scroll_hor.dart';
+import 'package:ip_set/ui/components/scroll_vert.dart';
+import 'package:ip_set/ui/components/interface.dart';
 import 'package:provider/provider.dart';
 
 class EditableNetTablePage extends StatefulWidget {
@@ -33,7 +33,7 @@ class _EditableNetTablePageState extends State<EditableNetTablePage> {
   final _formKey = GlobalKey<FormState>();
 
   String interfaceDHCP = '';
-  String interfaceDHCPValidator = ''; 
+  String interfaceDHCPValidator = '';
 
   // Timer? _editedDebounce;
 
@@ -109,7 +109,8 @@ class _EditableNetTablePageState extends State<EditableNetTablePage> {
     final (resp, msg) = await saveToDisk(context, _rows, _defaultFilePath);
 
     if (resp) setState(() {});
-    if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+    if (mounted)
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
 
     networkState.setNetworkTableOriginal(deepCopyRows(_rows));
     networkState.setEdited(false);
@@ -122,10 +123,9 @@ class _EditableNetTablePageState extends State<EditableNetTablePage> {
       });
       return;
     }
-    final resp = await setDHCPIPv4(
-      interface: interfaceDHCP,
-    );
-    if (mounted && resp.isNotEmpty) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(resp)));
+    final resp = await setDHCPIPv4(interface: interfaceDHCP);
+    if (mounted && resp.isNotEmpty)
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(resp)));
   }
 
   _executeRow(index) async {
@@ -145,7 +145,8 @@ class _EditableNetTablePageState extends State<EditableNetTablePage> {
       gateway: r.gwCtrl.text,
     );
     if (!isValid.isValid) {
-      final confirm = await confirmDialog(context,
+      final confirm = await confirmDialog(
+        context,
         title: 'Configuração inválida',
         message: 'Tem certeza que deseja aplicar essa configuração?',
         confirmText: 'Aplicar mesmo assim!',
@@ -157,24 +158,26 @@ class _EditableNetTablePageState extends State<EditableNetTablePage> {
         return;
       }
     }
-    
-    final dns = _rows[index]
-          .dnsCtrl
-          .text
-          .split(RegExp(r'[;,]'))
-          .map((s) => s.trim())
-          .where((s) => s.isNotEmpty)
-          .toList();
+
+    final dns = _rows[index].dnsCtrl.text
+        .split(RegExp(r'[;,]'))
+        .map((s) => s.trim())
+        .where((s) => s.isNotEmpty)
+        .toList();
     final resp = await setStaticIPv4(
       ip: _rows[index].ipCtrl.text,
       mask: _rows[index].maskCtrl.text,
       interfaceName: _rows[index].interfaceName,
       gw: _rows[index].gwCtrl.text,
-      dnsServers: dns
+      dnsServers: dns,
     );
 
-    if (mounted && resp.isNotEmpty) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(resp)));
-    if (mounted && resp.isEmpty) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Configuração aplicada com sucesso.")));
+    if (mounted && resp.isNotEmpty)
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(resp)));
+    if (mounted && resp.isEmpty)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Configuração aplicada com sucesso.")),
+      );
   }
 
   _validateConfig(int index) {
@@ -186,9 +189,9 @@ class _EditableNetTablePageState extends State<EditableNetTablePage> {
     );
     if (mounted) {
       if (result.isValid) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Configuração válida.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Configuração válida.')));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Erros:\n${result.errors.join('\n')}')),
@@ -197,25 +200,24 @@ class _EditableNetTablePageState extends State<EditableNetTablePage> {
     }
   }
 
+  // Recalcula isEdited quando algo mudar
+  // void _recomputeEdited() {
+  //   var networkState = context.read<NetworkState>();
+  //   final original = networkState.getNetworkTableOriginal;
 
-// Recalcula isEdited quando algo mudar
-// void _recomputeEdited() {
-//   var networkState = context.read<NetworkState>();
-//   final original = networkState.getNetworkTableOriginal;
+  //   final originalJson = jsonEncode(original.map((r) => r.toJson()).toList());
+  //   final currentJson = jsonEncode(_rows.map((r) => r.toJson()).toList());
 
-//   final originalJson = jsonEncode(original.map((r) => r.toJson()).toList());
-//   final currentJson = jsonEncode(_rows.map((r) => r.toJson()).toList());
-
-//   if (originalJson != currentJson) {
-//     networkState.setEdited(true);
-//   } else {
-//     networkState.setEdited(false);
-//   }
-// }
-// void _recomputeEditedDebounced() {
-//   _editedDebounce?.cancel();
-//   _editedDebounce = Timer(const Duration(milliseconds: 250), _recomputeEdited);
-// }
+  //   if (originalJson != currentJson) {
+  //     networkState.setEdited(true);
+  //   } else {
+  //     networkState.setEdited(false);
+  //   }
+  // }
+  // void _recomputeEditedDebounced() {
+  //   _editedDebounce?.cancel();
+  //   _editedDebounce = Timer(const Duration(milliseconds: 250), _recomputeEdited);
+  // }
 
   // Criando listeners em IP e mascara para calcular gateway automaticamente
   void _calcGateway(r) {
@@ -224,7 +226,10 @@ class _EditableNetTablePageState extends State<EditableNetTablePage> {
     final mask = r.maskCtrl.text;
     final gw = r.gwCtrl.text;
 
-    if (configState.isCalcGatewayEnabled && gw.isEmpty && isIPv4(ip) && isMask(mask)) {
+    if (configState.isCalcGatewayEnabled &&
+        gw.isEmpty &&
+        isIPv4(ip) &&
+        isMask(mask)) {
       try {
         final netInfo = networkInfo(ip: ip, mask: mask);
         setState(() {
@@ -246,19 +251,20 @@ class _EditableNetTablePageState extends State<EditableNetTablePage> {
     }
   }
 
-  
-
   DataRow _buildRow(int index) {
     final r = _rows[index];
     for (final r in _rows) {
       _attachListeners(r);
-    //   _attachListenersEdited(r);
-    //   _attachListenersCalcGateway(r);
+      //   _attachListenersEdited(r);
+      //   _attachListenersCalcGateway(r);
     }
     return DataRow(
       cells: [
-        DataCell(IconButton(
-            tooltip: isAdmin() ? 'Aplicar' : 'Aplicar: Necessita permissão de Administrador',
+        DataCell(
+          IconButton(
+            tooltip: isAdmin()
+                ? 'Aplicar'
+                : 'Aplicar: Necessita permissão de Administrador',
             icon: const Icon(Icons.play_arrow),
             iconSize: 30,
             disabledColor: Colors.grey,
@@ -267,37 +273,47 @@ class _EditableNetTablePageState extends State<EditableNetTablePage> {
           ),
         ),
 
-        DataCell(TextFormFieldValidate(
-          controller: r.descCtrl,
-          field: 'Descrição',
-          isRequired: true,
-          maxLength: 50,
-          hintText: 'Descrição',
-        )),
-        DataCell(TextFormFieldValidate(
-          controller: r.ipCtrl,
-          field: 'IP',
-          isRequired: true,
-          isIPv4: true,
-        )),
-        DataCell(TextFormFieldValidate(
-          controller: r.maskCtrl,
-          field: 'Máscara',
-          isRequired: true,
-          isMask: true,
-          hintText: '255.255.255.0',
-        )),
-        DataCell(TextFormFieldValidate(
-          controller: r.gwCtrl,
-          field: 'Gateway',
-          isIPv4: true,
-          hintText: '0.0.0.1',
-        )),
-        DataCell(TextFormFieldValidate(
-          controller: r.dnsCtrl,
-          field: 'DNS',
-          hintText: '8.8.8.8;1.1.1.1',
-        )),
+        DataCell(
+          TextFormFieldValidate(
+            controller: r.descCtrl,
+            field: 'Descrição',
+            isRequired: true,
+            maxLength: 50,
+            hintText: 'Descrição',
+          ),
+        ),
+        DataCell(
+          TextFormFieldValidate(
+            controller: r.ipCtrl,
+            field: 'IP',
+            isRequired: true,
+            isIPv4: true,
+          ),
+        ),
+        DataCell(
+          TextFormFieldValidate(
+            controller: r.maskCtrl,
+            field: 'Máscara',
+            isRequired: true,
+            isMask: true,
+            hintText: '255.255.255.0',
+          ),
+        ),
+        DataCell(
+          TextFormFieldValidate(
+            controller: r.gwCtrl,
+            field: 'Gateway',
+            isIPv4: true,
+            hintText: '0.0.0.1',
+          ),
+        ),
+        DataCell(
+          TextFormFieldValidate(
+            controller: r.dnsCtrl,
+            field: 'DNS',
+            hintText: '8.8.8.8;1.1.1.1',
+          ),
+        ),
 
         DataCell(
           SizedBox(
@@ -328,9 +344,10 @@ class _EditableNetTablePageState extends State<EditableNetTablePage> {
         ),
 
         // Coluna de ações
-        DataCell(Row(
-          children: [
-            IconButton(
+        DataCell(
+          Row(
+            children: [
+              IconButton(
                 tooltip: 'Validar configuração',
                 icon: const Icon(Icons.check_circle, color: Colors.green),
                 iconSize: 20,
@@ -338,13 +355,14 @@ class _EditableNetTablePageState extends State<EditableNetTablePage> {
                   _validateConfig(index);
                 },
               ),
-            IconButton(
+              IconButton(
                 tooltip: 'Excluir',
                 icon: const Icon(Icons.delete, color: Colors.red),
                 iconSize: 15,
                 onPressed: () async {
                   // final confirm = await confirmDelete(context);
-                  final confirm = await confirmDialog(context,
+                  final confirm = await confirmDialog(
+                    context,
                     title: 'Confirmar exclusão',
                     message: 'Tem certeza que deseja excluir esta linha?',
                     confirmText: 'Excluir',
@@ -357,8 +375,8 @@ class _EditableNetTablePageState extends State<EditableNetTablePage> {
                   }
                 },
               ),
-          ],
-        ),
+            ],
+          ),
         ),
       ],
     );
@@ -371,119 +389,133 @@ class _EditableNetTablePageState extends State<EditableNetTablePage> {
       return const Center(child: CircularProgressIndicator());
     }
     return ScrollVerticalComponent(
-        child: Column(
-          children: [
-            if(!isAdmin()) Text(
+      child: Column(
+        children: [
+          if (!isAdmin())
+            Text(
               'Você não está executando o programa como Administrador! Obrigatório para alterar o IP.',
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, height: 4),
+              style: TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+                height: 4,
+              ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const SizedBox(width: 30),
-                // Botão de salvar
-                IconButton(
-                  tooltip: 'Salvar',
-                  icon: const Icon(Icons.save),
-                  onPressed: _saveToDisk,
-                  // color: networkState.getIsEdited ? Colors.red : Colors.grey,
-                  color: Colors.green,
-                ),
-                const SizedBox(width: 30),
-                // Container de definir DHCP
-                Container(
-                  margin: const EdgeInsets.only(right: 10),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(width: 30),
+              // Botão de salvar
+              IconButton(
+                tooltip: 'Salvar',
+                icon: const Icon(Icons.save),
+                onPressed: _saveToDisk,
+                // color: networkState.getIsEdited ? Colors.red : Colors.grey,
+                color: Colors.green,
+              ),
+              const SizedBox(width: 30),
+              // Container de definir DHCP
+              Container(
+                margin: const EdgeInsets.only(right: 10),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.primary,
+                    width: 1,
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 200,
-                          child: InterfaceDropdown(
-                            value: interfaceDHCP,
-                            onChanged: (name) => setState(() {
-                              interfaceDHCP = name ?? '';
-                              if (interfaceDHCP.isNotEmpty) {
-                                interfaceDHCPValidator = '';
-                              }
-                            }),
-                            forceErrorText: interfaceDHCPValidator.isEmpty ? null : interfaceDHCPValidator,
-                            label: 'Interface',
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 200,
+                        child: InterfaceDropdown(
+                          value: interfaceDHCP,
+                          onChanged: (name) => setState(() {
+                            interfaceDHCP = name ?? '';
+                            if (interfaceDHCP.isNotEmpty) {
+                              interfaceDHCPValidator = '';
+                            }
+                          }),
+                          forceErrorText: interfaceDHCPValidator.isEmpty
+                              ? null
+                              : interfaceDHCPValidator,
+                          label: 'Interface',
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Tooltip(
+                        message: isAdmin()
+                            ? 'Definir DHCP'
+                            : 'Definir DHCP: Necessita permissão de Administrador',
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.primary,
+                          ),
+                          onPressed: isAdmin() ? () => _executeDHCP() : null,
+                          child: Row(
+                            children: [
+                              const Text(
+                                'Definir DHCP',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              Icon(Icons.play_arrow, color: Colors.green),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: 10),
-                        Tooltip(
-                          message: isAdmin() ? 'Definir DHCP' : 'Definir DHCP: Necessita permissão de Administrador',
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Theme.of(context).colorScheme.primary
-                            ),
-                            onPressed: isAdmin() ? () => _executeDHCP() : null,
-                            child: Row(
-                              children: [
-                                const Text('Definir DHCP', style: TextStyle(color: Colors.white)),
-                                Icon(Icons.play_arrow, color: Colors.green),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            ScrollHorizontalComponent(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          ScrollHorizontalComponent(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 11),
                 child: Container(
-                  margin: const EdgeInsets.only(bottom: 11),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        top: BorderSide(color: Colors.white, width: 1),
-                        bottom: BorderSide(color: Colors.white, width: 1),
-                      ),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(color: Colors.white, width: 1),
+                      bottom: BorderSide(color: Colors.white, width: 1),
                     ),
-                    child: Form(
-                      key: _formKey,
-                      child: DataTable(
-                        columnSpacing: 20,
-                        // dataRowMinHeight: 40,
-                        columns: const [
-                          DataColumn(label: Text('Aplicar')),
-                          DataColumn(label: Text('Descrição')),
-                          DataColumn(label: Text('IP')),
-                          DataColumn(label: Text('Máscara')),
-                          DataColumn(label: Text('Gateway')),
-                          DataColumn(label: Text('DNS (; separados)')),
-                          DataColumn(label: Text('Interface')),
-                          DataColumn(label: Text('Ações')),
-                        ],
-                        rows: List.generate(_rows.length, _buildRow),
-                      ),
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    child: DataTable(
+                      columnSpacing: 20,
+                      // dataRowMinHeight: 40,
+                      columns: const [
+                        DataColumn(label: Text('Aplicar')),
+                        DataColumn(label: Text('Descrição')),
+                        DataColumn(label: Text('IP')),
+                        DataColumn(label: Text('Máscara')),
+                        DataColumn(label: Text('Gateway')),
+                        DataColumn(label: Text('DNS (; separados)')),
+                        DataColumn(label: Text('Interface')),
+                        DataColumn(label: Text('Ações')),
+                      ],
+                      rows: List.generate(_rows.length, _buildRow),
                     ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _addRow,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary
-              ),
-              child: const Icon(Icons.add, size: 30, color: Colors.white),
+          ),
+          const SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: _addRow,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
             ),
-            const SizedBox(height: 10), // espaço para o rodapé
+            child: const Icon(Icons.add, size: 30, color: Colors.white),
+          ),
+          const SizedBox(height: 10), // espaço para o rodapé
         ],
       ),
     );

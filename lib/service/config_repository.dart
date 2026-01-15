@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:ip_changer/models/app_config.dart';
+import 'package:ip_set/models/app_config.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ConfigRepository {
@@ -8,6 +8,7 @@ class ConfigRepository {
 
   Future<File> _file() async {
     final dir = await getApplicationSupportDirectory();
+    // print('Config directory: $dir');
     await dir.create(recursive: true);
     return File('${dir.path}\\$_fileName');
   }

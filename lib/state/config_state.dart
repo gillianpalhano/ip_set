@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:ip_changer/models/app_config.dart';
-import 'package:ip_changer/service/config_repository.dart';
+import 'package:ip_set/models/app_config.dart';
+import 'package:ip_set/service/config_repository.dart';
 
 class ConfigState extends ChangeNotifier {
   final ConfigRepository _repo;
-  
+
   // calcular gateway automaticamente
   bool _isCalcGatewayEnabled = true;
   bool get isCalcGatewayEnabled => _isCalcGatewayEnabled;
 
   // tema da aplicação
-  bool _darkMode = false; // darkMode.system;
+  bool _darkMode = true; // darkMode.system;
   bool get isDarkMode => _darkMode;
 
   ConfigState(this._repo);
@@ -29,17 +29,13 @@ class ConfigState extends ChangeNotifier {
     _isCalcGatewayEnabled = !_isCalcGatewayEnabled;
     notifyListeners();
 
-    await _repo.save(
-      AppConfig(isCalcGatewayEnabled: _isCalcGatewayEnabled),
-    );
+    await _repo.save(AppConfig(isCalcGatewayEnabled: _isCalcGatewayEnabled));
   }
 
   Future<void> toggleTheme() async {
     _darkMode = !_darkMode;
     notifyListeners();
 
-    await _repo.save(
-      AppConfig(darkMode: _darkMode),
-    );
+    await _repo.save(AppConfig(darkMode: _darkMode));
   }
 }
