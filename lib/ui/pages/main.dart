@@ -400,6 +400,7 @@ class _EditableNetTablePageState extends State<EditableNetTablePage> {
                 height: 4,
               ),
             ),
+          SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
